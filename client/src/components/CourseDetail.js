@@ -1,16 +1,35 @@
 import React, {useState, useEffect}from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate, Link} from 'react-router-dom'
 
 function CourseDetail() {
     const [course, setCourse] = useState({});
+    const {id} = useParams();
+    const navigate = useNavigate();
+
+    
+    //fetching 
+    useEffect( () => {
+            fetch(`http://localhost:5000/api/courses/${id}`)
+            .then(res => res.json())
+            .then(data => setCourse(data))
+            .catch(err => console.log(err))
+    }, [])
+
+     //Event handlers
+const handleDelete  = () =>{
+    fetch(`http://localhost:5000/api/courses/${id}`, {method: 'DELETE'})
+    .then(res => navigate('/'))
+    .catch(err => console.log(err))
+}
+
 
   return (
     <main>
     <div className="actions--bar">
         <div className="wrap">
-            <a className="button" href="update-course.html">Update Course</a>
-            <a className="button" href="#">Delete Course</a>
-            <a className="button button-secondary" href="index.html">Return to List</a>
+            <Link className="button" to={`/courses/${id}/update`}>Update Course</Link>
+            <button className="button" onClick={handleDelete}>Delete Course</button>
+            <Link className="button button-secondary" to='/'>Return to List</Link>
         </div>
     </div>
     
@@ -20,8 +39,8 @@ function CourseDetail() {
             <div className="main--flex">
                 <div>
                     <h3 className="course--detail--title">Course</h3>
-                    <h4 className="course--name">Build a Basic Bookcase</h4>
-                    <p>By Joe Smith</p>
+                    <h4 className="course--name">{course.title}</h4>
+                    <p>{course?.user?.firstName} {course?.user?.lastName}</p>
 
                     <p>High-end furniture projects are great to dream about. But unless you have a well-equipped shop and some serious woodworking experience to draw on, it can be difficult to turn the dream into a reality.</p>
                     

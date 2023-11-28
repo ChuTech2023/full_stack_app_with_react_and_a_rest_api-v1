@@ -7,12 +7,10 @@ function Courses() {
 
     //fetching courses and updating the courses state
     useEffect( () => {
-        return () => {
             fetch('http://localhost:5000/api/courses')
             .then(res => res.json())
             .then(data => setCourses(data))
             .catch(err => console.log(err))
-          }
     }, [])
 
   return (
