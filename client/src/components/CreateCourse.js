@@ -1,8 +1,21 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 function CreateCourse() {
+
+    const navigate = useNavigate();
+
+     //Event handlers
+     const handleSubmit = (event) => {
+        event.preventDefault();
+    }
+
+    const handleCancel = (event) => {
+        event.preventDefault();
+        navigate('/');
+    }
+
   return (
-    <main>
     <div class="wrap">
         <h2>Create Course</h2>
         <div class="validation--errors">
@@ -12,7 +25,7 @@ function CreateCourse() {
                 <li>Please provide a value for "Description"</li>
             </ul>
         </div>
-        <form>
+        <form onSubmit={handleSubmit}>
             <div class="main--flex">
                 <div>
                     <label for="courseTitle">Course Title</label>
@@ -31,10 +44,10 @@ function CreateCourse() {
                     <textarea id="materialsNeeded" name="materialsNeeded"></textarea>
                 </div>
             </div>
-            <button class="button" type="submit">Create Course</button><button class="button button-secondary" onclick="event.preventDefault(); location.href='index.html';">Cancel</button>
+            <button class="button" type="submit">Create Course</button>
+            <button class="button button-secondary" onclick={handleCancel}>Cancel</button>
         </form>
     </div>
-</main>
   )
 }
 

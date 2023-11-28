@@ -1,11 +1,24 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function UpdateCourse() {
+    const navigate = useNavigate();
+
+     //Event handlers
+     const handleSubmit = (event) => {
+        event.preventDefault();
+    }
+
+    const handleCancel = (event) => {
+        event.preventDefault();
+        navigate('/');
+    }
+
 
     return (
         <div className="wrap">
             <h2>Update Course</h2>
-            <form>
+                <form onSubmit={handleSubmit}>
                 <div className="main--flex">
                     <div>
                         <label for="courseTitle">Course Title</label>
@@ -25,7 +38,7 @@ function UpdateCourse() {
                     </div>
                 </div>
                 <button className="button" type="submit">Update Course</button>
-                <button className="button button-secondary" onclick="event.preventDefault(); location.href='index.html';">Cancel</button>
+                <button className="button button-secondary" onclick={handleCancel}>Cancel</button>
             </form>
         </div>
     )
