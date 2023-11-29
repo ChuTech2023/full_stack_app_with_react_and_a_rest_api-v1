@@ -1,22 +1,88 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useRef, useContext, useState} from 'react'
+import { useNavigate, useParams, Navigate} from 'react-router-dom'
+
+import Error from './Error';
+import UserContext from '../context/UserContext';
 
 function UpdateCourse() {
+    const { user } = useContext(UserContext);
+    //sate
+    const [errors, setErrors] = useState([])
+
+    const title = useRef(null);
+    const description = useRef(null);
+    const estimatedTime = useRef(null);
+    const materialsNeeded= useRef(null);
+
+    //return the url params
+    const {id} = useParams();
+
     const navigate = useNavigate();
 
      //Event handlers
      const handleSubmit = (event) => {
         event.preventDefault();
+
+        const data = {
+            title: title.current.value,
+            description: description.current.value,
+            estimatedTime: estimatedTime.current.value,
+            materialsNeeded: materialsNeeded.current.value
+        }
+
+        try {
+            const res = await fetch(`http://localhost:5000/api/courses/${id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+
+                })
+            if (res.status === 200) {
+                navigate('/')
+            } else if (res.status === 400) {
+                const data = await res.json();
+                setErrors(data.errors) 
+            }else {
+                throw new Error();
+            }
+
+        } catch (error) {
+            console.log(error);
+            setErrors(['Internal error occurred, try again'])
+        }
     }
+
+    //     try {
+    //         fetch(`http://localhost:5000/api/courses/${id}`, 
+    //         {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(data)
+        
+    //     })
+    //         .then(res => navigate('/'))
+    //         .catch(err => console.log(err)) 
+    //     } catch (error) {
+            
+    //     }
+    // }
 
     const handleCancel = (event) => {
         event.preventDefault();
-        navigate('/');
+        navigate(`/courses/${id}`);
     }
 
 
     return (
         <div className="wrap">
+            <div class="validation--errors">
+                <Error errors={errors} /> 
+            </div>
             <h2>Update Course</h2>
                 <form onSubmit={handleSubmit}>
                 <div className="main--flex">
