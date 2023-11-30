@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom'
-import UserContext from './context/UserContext';
 
 // App Components
 import Courses from './components/Courses';
@@ -20,28 +19,26 @@ import PrivateRoute from './components/PrivateRoute';
 function App() {
 
   return (
-    <UserContext.Provider>
-      <>
-        <Header />
-        <main>
-          <Routes>
-            <Route path='/' element={<Courses />} />
-            <Route path='/courses/:id' element={<CourseDetail />} />
-            <Route path='/signin' element={<UserSignIn />} />
-            <Route path='/signup' element={<UserSignUp />} />
-            <Route path='/signout' element={<UserSignOut />} />
-            <Route element={<PrivateRoute />}>
-              <Route path='/courses/create' element={<CreateCourse />} />
-              <Route path='/courses/:id/update' element={<UpdateCourse />} />
-            </Route>
-            <Route path="/error" element={<UnhandledError />} />
+    <>
+      <Header />
+      <main>
+        <Routes>
+          <Route path='/' element={<Courses />} />
+          <Route path='/courses/:id' element={<CourseDetail />} />
+          <Route path='/signin' element={<UserSignIn />} />
+          <Route path='/signup' element={<UserSignUp />} />
+          <Route path='/signout' element={<UserSignOut />} />
+          <Route element={<PrivateRoute />}>
+            <Route path='/courses/create' element={<CreateCourse />} />
+            <Route path='/courses/:id/update' element={<UpdateCourse />} />
+          </Route>
+          <Route path="/notfound" element={<NotFound />} />
+          <Route path="/forbidden" element={<Forbidden />} />
+          <Route path="/error" element={<UnhandledError />} />
           <Route path="*" element={<NotFound />} />
-            
-          </Routes>
-          {/* <Route path="/forbidden" element={<Forbidden />} /> */}
-        </main>
-      </>
-    </UserContext.Provider>
+        </Routes>
+      </main>
+    </>
   );
 }
 

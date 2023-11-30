@@ -1,5 +1,6 @@
 import React, { useRef, useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { api } from '../utils/apiHelper';
 
 import Error from './Error';
 import UserContext from '../context/UserContext';
@@ -21,23 +22,15 @@ function UserSignUp() {
         event.preventDefault();
         const data = {
             firstName: firstName.current.value,
-            lastNameName: lastName.current.value,
+            lastName: lastName.current.value,
             emailAddress: emailAddress.current.value,
             password: password.current.value
         }
         try {
-            const res = await fetch('http://localhost:5000/api/users',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-
-                })
+            const res = await api("/users", "POST", data);
             if (res.status === 201) {
-                console.log(`${data.firstName} ${data.lastName} is authenticated`)
-                await actions.signIn(user)
+                console.log(`${data.firstName} ${data.lastName} is successfully signed up and authenticated`)
+                await actions.signIn(data)
                 navigate('/')
             } else if (res.status === 400) {
                 const data = await res.json();
@@ -49,6 +42,7 @@ function UserSignUp() {
         } catch (error) {
             console.log(error);
             setErrors(['Internal error occurred, try again'])
+            navigate('/error');
         }
     }
 
@@ -60,21 +54,21 @@ function UserSignUp() {
     return (
         <div className="form--centered">
             <h2>Sign Up</h2>
-            <div class="validation--errors">
+            <div className="validation--errors">
                 <Error errors={errors} />
             </div>
 
             <form onSubmit={handleSubmit}>
-                <label for="firstName">First Name</label>
-                <input id="firstName" name="firstName" type="text" value="" />
-                <label for="lastName">Last Name</label>
-                <input id="lastName" name="lastName" type="text" value="" />
-                <label for="emailAddress">Email Address</label>
-                <input id="emailAddress" name="emailAddress" type="email" value="" />
-                <label for="password">Password</label>
-                <input id="password" name="password" type="password" value="" />
+                <label htmlFor="firstName">First Name</label>
+                <input id="firstName" name="firstName" type="text" ref={firstName} />
+                <label htmlFor="lastName">Last Name</label>
+                <input id="lastName" name="lastName" type="text" ref={lastName} />
+                <label htmlFor="emailAddress">Email Address</label>
+                <input id="emailAddress" name="emailAddress" type="email" ref={emailAddress} />
+                <label htmlFor="password">Password</label>
+                <input id="password" name="password" type="password" ref={password} />
                 <button className="button" type="submit">Sign Up</button>
-                <button className="button button-secondary" onclick={handleCancel}>Cancel</button>
+                <button className="button button-secondary" onClick={handleCancel}>Cancel</button>
             </form>
             <p>Already have a user account? Click here to <Link to='/signin'>sign in</Link>!</p>
         </div>

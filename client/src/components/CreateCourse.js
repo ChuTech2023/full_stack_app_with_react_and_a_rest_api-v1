@@ -1,9 +1,14 @@
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+
+import { api } from '../utils/apiHelper';
+import Error from './Error';
+import UserContext from '../context/UserContext';
 
 function CreateCourse() {
     //state
     const [errors, setErrors] = useState([])
+    const {user} = useContext(UserContext);
 
     const title = useRef(null);
     const description = useRef(null);
@@ -17,21 +22,14 @@ function CreateCourse() {
         event.preventDefault();
 
         const data = {
+            userId: user.id,
             title: title.current.value,
             description: description.current.value,
             estimatedTime: estimatedTime.current.value,
             materialsNeeded: materialsNeeded.current.value
         }
         try {
-            const res = await fetch('http://localhost:5000/api/courses',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-
-                })
+            const res = await api("/courses", "POST", data, user);
             if (res.status === 201) {
                 navigate('/')
             } else if (res.status === 400) {
@@ -42,8 +40,8 @@ function CreateCourse() {
             }
 
         } catch (error) {
-            console.log(error);
             setErrors(['Internal error occurred, try again'])
+            navigate('/error');
         }
     }
 
@@ -53,32 +51,32 @@ function CreateCourse() {
     }
 
     return (
-        <div class="wrap">
+        <div className="wrap">
             <h2>Create Course</h2>
-            <div class="validation--errors">
+            <div className="validation--errors">
                 <Error errors={errors} /> 
             </div>
             <form onSubmit={handleSubmit}>
-                <div class="main--flex">
+                <div className="main--flex">
                     <div>
-                        <label for="courseTitle">Course Title</label>
-                        <input id="courseTitle" name="courseTitle" type="text" value="" />
+                        <label htmlFor="courseTitle">Course Title</label>
+                        <input id="courseTitle" name="courseTitle" type="text" ref={title} />
 
                         <p>By Joe Smith</p>
 
-                        <label for="courseDescription">Course Description</label>
-                        <textarea id="courseDescription" name="courseDescription"></textarea>
+                        <label htmlFor="courseDescription">Course Description</label>
+                        <textarea id="courseDescription" name="courseDescription" ref={description}></textarea>
                     </div>
                     <div>
-                        <label for="estimatedTime">Estimated Time</label>
-                        <input id="estimatedTime" name="estimatedTime" type="text" value="" />
+                        <label htmlFor="estimatedTime">Estimated Time</label>
+                        <input id="estimatedTime" name="estimatedTime" type="text" ref={estimatedTime}  />
 
-                        <label for="materialsNeeded">Materials Needed</label>
-                        <textarea id="materialsNeeded" name="materialsNeeded"></textarea>
+                        <label htmlFor="materialsNeeded">Materials Needed</label>
+                        <textarea id="materialsNeeded" name="materialsNeeded" ref={materialsNeeded}></textarea>
                     </div>
                 </div>
-                <button class="button" type="submit">Create Course</button>
-                <button class="button button-secondary" onclick={handleCancel}>Cancel</button>
+                <button className="button" type="submit">Create Course</button>
+                <button className="button button-secondary" onClick={handleCancel}>Cancel</button>
             </form>
         </div>
     )

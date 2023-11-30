@@ -1,8 +1,10 @@
 import React from 'react'
 
 function Error({ errors }) {
-    return (
-        < >
+    let error = null;
+    if (errors.length) {
+        error = (
+            < >
             <h3>Validation Errors</h3>
             <ul>
                 {
@@ -10,8 +12,10 @@ function Error({ errors }) {
                 }
             </ul>
         </>
-
-    )
+        );
+        
+    }
+    return error;
 }
 
 export default Error

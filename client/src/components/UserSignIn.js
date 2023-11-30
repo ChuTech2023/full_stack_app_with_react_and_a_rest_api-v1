@@ -1,17 +1,41 @@
-import React, { useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useRef, useContext, useState } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
-function UserSignIn(props) {
+import UserContext from '../context/UserContext';
+import Error from './Error';
 
-    //State
-    const emailAddress = useRef();
-    const password = useRef();
+function UserSignIn() {
+    //state
+    const [errors, setErrors] = useState([])
+
+    const { actions } = useContext(UserContext);
+    const location = useLocation();
+
+    const emailAddress = useRef(null);
+    const password = useRef(null);
+
     const navigate = useNavigate();
 
     //Event handlers
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        props.UserSignIn(emailAddress.value, password.value)
+    const handleSubmit = async (event) => {
+
+        try {
+            event.preventDefault();
+            const user = await actions.signIn({ emailAddress: emailAddress.current.value, password: password.current.value })
+            let from = "/";
+            if (location.state) {
+                from = location.state.from
+            }
+            if (user) {
+                navigate(from);
+            } else {
+                setErrors(["Login failed"]);
+            }
+        } catch (error) {
+            navigate('/error')
+        }
+
+
     }
 
     const handleCancel = (event) => {
@@ -22,13 +46,17 @@ function UserSignIn(props) {
         <div className="form--centered">
             <h2>Sign In</h2>
 
+            <div className="validation--errors">
+                <Error errors={errors} />
+            </div>
+
             <form onSubmit={handleSubmit}>
-                <label for="emailAddress">Email Address</label>
-                <input id="emailAddress" name="emailAddress" type="email" value="" />
-                <label for="password">Password</label>
-                <input id="password" name="password" type="password" value="" />
+                <label htmlFor="emailAddress">Email Address</label>
+                <input id="emailAddress" name="emailAddress" type="email" ref={emailAddress} />
+                <label htmlFor="password">Password</label>
+                <input id="password" name="password" type="password" ref={password} />
                 <button className="button" type="submit">Sign In</button>
-                <button class="button button-secondary" onclick={handleCancel}>Cancel</button>
+                <button className="button button-secondary" onClick={handleCancel}>Cancel</button>
             </form>
             <p>Don't have a user account? Click here to <Link to='/signup'>sign up</Link>!</p>
 

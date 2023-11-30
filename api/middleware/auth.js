@@ -9,7 +9,6 @@ module.exports = async (req, res, next) => {
 
     try {
         const credentials = auth(req);
-
         // if credentials exist
         if (credentials) {
             //Get user from database
@@ -22,18 +21,18 @@ module.exports = async (req, res, next) => {
             //If user exist in the database
             if (user) {
                 const validPassword = bcrypt.compareSync(credentials.pass, user.password)
-                
+
                 //If  entered password match saved password
                 if (validPassword) {
                     req.currentUser = user
                 } else {
-                  message = "Authentication failed"  
+                    message = "Authentication failed"
                 }
             } else {
                 message = " User not found"
             }
         } else {
-            message = "Athorization header not found"
+            message = "Authorization header not found"
         }
     } catch (error) {
         console.log(error);
@@ -41,7 +40,7 @@ module.exports = async (req, res, next) => {
     }
 
     if (message) {
-        res.status(401).json({message: "Access Denied" })
+        res.status(401).json({ message: "Access Denied" })
         return
     }
     next();
