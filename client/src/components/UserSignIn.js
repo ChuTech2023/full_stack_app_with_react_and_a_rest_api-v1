@@ -19,6 +19,7 @@ function UserSignIn() {
     //Event handlers
     const handleSubmit = async (event) => {
 
+        //crendential for user to sign in
         try {
             event.preventDefault();
             const user = await actions.signIn({ emailAddress: emailAddress.current.value, password: password.current.value })
@@ -38,6 +39,7 @@ function UserSignIn() {
 
     }
 
+    //handle cancel button
     const handleCancel = (event) => {
         event.preventDefault();
         navigate('/');

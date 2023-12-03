@@ -7,7 +7,8 @@ import UserContext from '../context/UserContext';
 
 function UserSignUp() {
     const { actions } = useContext(UserContext);
-    //sate
+    
+    //state
     const [errors, setErrors] = useState([])
 
     const firstName = useRef(null);
@@ -26,6 +27,8 @@ function UserSignUp() {
             emailAddress: emailAddress.current.value,
             password: password.current.value
         }
+
+        //send request to server to sign up user
         try {
             const res = await api("/users", "POST", data);
             if (res.status === 201) {

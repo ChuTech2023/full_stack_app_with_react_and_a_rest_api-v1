@@ -7,6 +7,7 @@ function UserSignOut() {
 
   const { actions } = useContext(UserContext);
 
+  //on page load sign up user
   useEffect(() => {
     actions.signOut();
   })

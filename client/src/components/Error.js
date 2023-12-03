@@ -1,5 +1,6 @@
 import React from 'react'
 
+//handling validation errors
 function Error({ errors }) {
     let error = null;
     if (errors.length) {

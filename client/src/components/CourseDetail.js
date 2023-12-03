@@ -12,7 +12,7 @@ function CourseDetail() {
     const navigate = useNavigate();
 
 
-    //fetching 
+    //fetch courses and save to courses state
     useEffect(() => {
         const fetchCourse = async () => {
             try {
@@ -36,9 +36,9 @@ function CourseDetail() {
 
     //Event handlers
     const handleDelete = () => {
-        fetch(`http://localhost:5000/api/courses/${id}`, { method: 'DELETE' })
+        api(`/courses/${id}`, 'DELETE', null, { emailAddress: user.emailAddress, password: user.password })
             .then(res => navigate('/'))
-            .catch(err =>  navigate('/error'))
+            .catch(err => navigate('/error'))
     }
 
 

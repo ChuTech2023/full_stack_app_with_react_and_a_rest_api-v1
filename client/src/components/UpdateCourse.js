@@ -8,7 +8,7 @@ import NotFound from './NotFound';
 
 function UpdateCourse() {
     const { user } = useContext(UserContext);
-    //sate
+    //state
     const [errors, setErrors] = useState([]);
     const [course, setCourse] = useState();
 
@@ -22,10 +22,11 @@ function UpdateCourse() {
 
     const navigate = useNavigate();
 
+    //fetching course by id and updating the course state
     useEffect(() => {
         const fetchCourse = async () => {
             try {
-                const res = api(`/courses/${id}`, 'GET')
+                const res = await api(`/courses/${id}`, 'GET')
                 const json = await res.json();
                 if (res.status === 200) {
                     setCourse(json);
@@ -53,13 +54,15 @@ function UpdateCourse() {
             materialsNeeded: materialsNeeded.current.value
         }
 
+        //update course
         try {
-            const res = await api(`/courses/${id}`, "PUT", data);
+            const res = await api(`/courses/${id}`, "PUT", data, { emailAddress: user.emailAddress, password: user.password });
             if (res.status === 204) {
                 navigate('/')
             } else if (res.status === 400) {
                 const data = await res.json();
-                setErrors(data.errors)
+               // setErrors(data.errors)
+               console.log(data);
             } else if (res.status === 403) {
                 navigate('/forbidden');
             } else {
@@ -73,6 +76,7 @@ function UpdateCourse() {
         }
     }
 
+    //handle cancel button
     const handleCancel = (event) => {
         event.preventDefault();
         navigate(`/courses/${id}`);
@@ -81,31 +85,31 @@ function UpdateCourse() {
 
     return (
         <div className="wrap">
-            <div class="validation--errors">
+            <div className="validation--errors">
                 <Error errors={errors} />
             </div>
             <h2>Update Course</h2>
             <form onSubmit={handleSubmit}>
                 <div className="main--flex">
                     <div>
-                        <label for="courseTitle">Course Title</label>
-                        <input id="courseTitle" name="courseTitle" defaultValue={course.title} type="text" value="Build a Basic Bookcase" />
+                        <label htmlFor="courseTitle">Course Title</label>
+                        <input id="courseTitle" name="courseTitle" defaultValue={course?.title} type="text" ref={title} />
 
-                        <p>By Joe Smith</p>
+                        <p>By {course?.user?.firstName} {course?.user?.lastName}</p>
 
-                        <label for="courseDescription">Course Description</label>
-                        <textarea id="courseDescription" defaultValue={course.description} name="courseDescription"></textarea>
+                        <label htmlFor="courseDescription">Course Description</label>
+                        <textarea id="courseDescription" defaultValue={course?.description} name="courseDescription" ref={description}></textarea>
                     </div>
                     <div>
-                        <label for="estimatedTime">Estimated Time</label>
-                        <input id="estimatedTime" defaultValue={course.estimatedTime} name="estimatedTime" type="text" value="14 hours" />
+                        <label htmlFor="estimatedTime">Estimated Time</label>
+                        <input id="estimatedTime" defaultValue={course?.estimatedTime} name="estimatedTime" type="text" ref={estimatedTime} />
 
-                        <label for="materialsNeeded">Materials Needed</label>
-                        <textarea id="materialsNeeded" defaultValue={course.materialsNeeded} name="materialsNeeded"></textarea>
+                        <label htmlFor="materialsNeeded">Materials Needed</label>
+                        <textarea id="materialsNeeded" defaultValue={course?.materialsNeeded} name="materialsNeeded" ref={materialsNeeded}></textarea>
                     </div>
                 </div>
                 <button className="button" type="submit">Update Course</button>
-                <button className="button button-secondary" onclick={handleCancel}>Cancel</button>
+                <button className="button button-secondary" onClick={handleCancel}>Cancel</button>
             </form>
         </div>
     )

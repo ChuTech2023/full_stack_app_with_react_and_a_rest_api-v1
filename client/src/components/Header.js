@@ -15,6 +15,7 @@ function Header() {
                 </h1>
                 <nav>
                     {
+                        //Show user & signout when logged in 
                         user ? (
                             <ul className="header--signedin">
                                 <li>Welcome, {user.firstName} {user.lastName}!</li>

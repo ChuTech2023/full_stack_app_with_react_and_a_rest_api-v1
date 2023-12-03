@@ -28,6 +28,8 @@ function CreateCourse() {
             estimatedTime: estimatedTime.current.value,
             materialsNeeded: materialsNeeded.current.value
         }
+
+        //sending a request to create a new course
         try {
             const res = await api("/courses", "POST", data, user);
             if (res.status === 201) {
@@ -45,6 +47,7 @@ function CreateCourse() {
         }
     }
 
+    //handle cancel button
     const handleCancel = (event) => {
         event.preventDefault();
         navigate('/');
@@ -62,7 +65,7 @@ function CreateCourse() {
                         <label htmlFor="courseTitle">Course Title</label>
                         <input id="courseTitle" name="courseTitle" type="text" ref={title} />
 
-                        <p>By Joe Smith</p>
+                        <p>By {user.firstName} {user.lastName}</p>
 
                         <label htmlFor="courseDescription">Course Description</label>
                         <textarea id="courseDescription" name="courseDescription" ref={description}></textarea>

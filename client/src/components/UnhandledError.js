@@ -1,3 +1,5 @@
+import React from "react";
+
 const UnhandledError = () => {
             <div className="wrap">
                 <h2>Error</h2>
