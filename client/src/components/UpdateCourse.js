@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Error from './Error';
 import UserContext from '../context/UserContext';
 import { api } from '../utils/apiHelper';
-import NotFound from './NotFound';
+
 
 function UpdateCourse() {
     const { user } = useContext(UserContext);
@@ -30,6 +30,9 @@ function UpdateCourse() {
                 const json = await res.json();
                 if (res.status === 200) {
                     setCourse(json);
+                    if (json.user.id !== user.id) {
+                        navigate('/forbidden')
+                    }
                 } else if (res.status === 404) {
                     navigate('/notfound');
                 } else {
@@ -61,8 +64,8 @@ function UpdateCourse() {
                 navigate('/')
             } else if (res.status === 400) {
                 const data = await res.json();
-               // setErrors(data.errors)
-               console.log(data);
+                setErrors(data.errors)
+                console.log(data);
             } else if (res.status === 403) {
                 navigate('/forbidden');
             } else {
